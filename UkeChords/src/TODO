@@ -1,0 +1,12 @@
+TODO
+ Created on: Jan 14, 2018
+     Author: james
+
+- Improve layout/look
+- Add scrollbox to Flexbox (if possible)
+- Allow resizeable (keep panel on right same width)
+- Increase download speed
+- Cache images (likely on startup, or able to refresh)
+- Consider just naming and leaving files on file system
+- Don't download to FILE, go straight to Image (if speed improved enough)
+- Clean up code according to a style guideline
