@@ -55,10 +55,23 @@ static bool grabXMLfile(URL url, std::string *buffer) {
 	}
 }
 
+String ExtractFileNameFromURL(String buffer) {
+	String temp = "";
+
+	int pos = buffer.lastIndexOfChar('/');
+	if(pos) {
+		temp = buffer.substring(pos+1);
+	}
+
+	return temp;
+}
+
 static const char* grabFile(URL url) {
 	// TODO: see if FILE can be replaced by juce::File (curl seems to require former)
 	FILE *file;
 
+	String fileName = ExtractFileNameFromURL(url.toString(true).toStdString());
+	cout << "File name: " << fileName << std::endl;
 	file = fopen("temp.png", "wb");
 
 	CURL *curl = curl_easy_init();

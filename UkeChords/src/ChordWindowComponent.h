@@ -16,6 +16,7 @@ namespace gndbnc {
 class ChordWindowComponent : public Component {
 public:
 	ChordWindowComponent();
+	ChordWindowComponent(Array<Image> &images);
 	virtual ~ChordWindowComponent();
 
     void paint (Graphics& g) override;
@@ -28,6 +29,7 @@ public:
 
 private:
     void addFlexItem(Image image);
+    void setupFlexBox();
 
 
     Array<Image> chordImages;

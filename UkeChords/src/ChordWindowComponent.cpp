@@ -10,15 +10,26 @@
 namespace gndbnc {
 
 ChordWindowComponent::ChordWindowComponent() {
+	setupFlexBox();
+}
+
+ChordWindowComponent::ChordWindowComponent(Array<Image> &images) {
+	setChordList(images);
+	setupChordWindow();
+	//setupFlexBox();
+	ChordWindowComponent();
+}
+
+ChordWindowComponent::~ChordWindowComponent() {
+
+}
+
+void ChordWindowComponent::setupFlexBox() {
     flexBox.alignContent = FlexBox::AlignContent::flexStart;
     flexBox.flexDirection = FlexBox::Direction::row;
     flexBox.justifyContent = FlexBox::JustifyContent::flexStart;
     flexBox.alignItems = FlexBox::AlignItems::flexStart;
     flexBox.flexWrap = FlexBox::Wrap::wrap;
-}
-
-ChordWindowComponent::~ChordWindowComponent() {
-
 }
 
 void ChordWindowComponent::paint (Graphics& g) {
@@ -56,10 +67,7 @@ void ChordWindowComponent::setupChordWindow()
 
 void ChordWindowComponent::setChordList(Array<Image> &images)
 {
-	if(chordImages.isEmpty() == false)
-	{
-		chordImages.clear();
-	}
+	chordImages.clear();
 	chordImages.addArray(images);
 }
 

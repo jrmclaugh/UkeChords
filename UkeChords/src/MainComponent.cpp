@@ -15,6 +15,7 @@ MainContentComponent::MainContentComponent()
 
 	setupChordSelectionPanel();
 
+	chordWindow = new gndbnc::ChordWindowComponent();
 	addAndMakeVisible(chordWindow);
 }
 
@@ -93,11 +94,13 @@ void MainContentComponent::paint (Graphics& g)
 
 void MainContentComponent::resized()
 {
-	chordWindow.setupChordWindow();
-	chordWindow.setBounds(getLocalBounds()
-			.withTrimmedRight (chordSelectionPanelWidth)
-            .reduced (10));
-	chordWindow.resized();
+	if(chordWindow != nullptr) {
+		chordWindow->setBounds(getLocalBounds()
+				.withTrimmedRight (chordSelectionPanelWidth)
+				.reduced (10));
+		chordWindow->setupChordWindow();
+		chordWindow->resized();
+	}
 }
 
 void MainContentComponent::setupToggleButton (ToggleButton& tb, StringRef text, int x, int y)
@@ -122,7 +125,13 @@ void MainContentComponent::buttonClicked (Button* b)
 			}
 		}
 
-		chordWindow.setChordList(images);
+		// TODO check for empty array
+
+		if(chordWindow != nullptr) {
+			delete chordWindow;
+			chordWindow = new gndbnc::ChordWindowComponent(images);
+			addAndMakeVisible(chordWindow);
+		}
 		resized();
 	}
 

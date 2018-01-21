@@ -15,6 +15,8 @@
 
 using std::cout;
 using std::endl;
+using gndbnc::ChordWindowComponent;
+using std::array;
 
 //==============================================================================
 /*
@@ -33,19 +35,17 @@ public:
     void resized() override;
 
     void setupChordSelectionPanel();
-    void setupFlexBoxPanel();
-    void addFlexItem(Colour colour);
 
 private:
 
     void setupToggleButton (ToggleButton& tb, StringRef text, int x, int y);
     void buttonClicked (Button* b) override;
 
-    gndbnc::ChordWindowComponent chordWindow;
+    ChordWindowComponent *chordWindow{nullptr};
     const int chordSelectionPanelWidth = 200;
 
-	std::array<ToggleButton,12> rootButton;
-	std::array<ToggleButton,18> typeButton;
+	array<ToggleButton,12> rootButton;
+	array<ToggleButton,18> typeButton;
     TextButton downloadButton;
 
     //==============================================================================
