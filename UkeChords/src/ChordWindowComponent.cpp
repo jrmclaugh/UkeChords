@@ -16,8 +16,7 @@ ChordWindowComponent::ChordWindowComponent() {
 ChordWindowComponent::ChordWindowComponent(Array<Image> &images) {
 	setChordList(images);
 	setupChordWindow();
-	//setupFlexBox();
-	ChordWindowComponent();
+	setupFlexBox();
 }
 
 ChordWindowComponent::~ChordWindowComponent() {
