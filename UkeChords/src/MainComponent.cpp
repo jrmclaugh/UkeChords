@@ -76,15 +76,24 @@ void MainContentComponent::setupChordSelectionPanel()
     setupToggleButton (typeButton[17],   "13",        leftMargin, topMargin + i++ * 22);
 
 
-    int downloadWidth = 120;
-    int downloadHeight = 40;
+    int displayWidth = 120;
+    int displayHeight = 40;
     int selectionWidth = typeGroup->getRight() - rootGroup->getX();
-    int downloadX = rootGroup->getX() + ((selectionWidth - downloadWidth) / 2);
-    int downloadY = typeGroup->getBottom() + 50;
-    downloadButton.setButtonText("Download");
-    downloadButton.setBounds(downloadX, downloadY, downloadWidth, downloadHeight);
-    downloadButton.addListener(this);
-    addAndMakeVisible(downloadButton);
+    int displayX = rootGroup->getX() + ((selectionWidth - displayWidth) / 2);
+    int displayY = typeGroup->getBottom() + 50;
+    displayButton.setButtonText("Display");
+    displayButton.setBounds(displayX, displayY, displayWidth, displayHeight);
+    displayButton.addListener(this);
+    addAndMakeVisible(displayButton);
+
+    int clearWidth = 120;
+    int clearHeight = 20;
+    int clearX = displayX;
+    int clearY = displayY + 50;
+    clearButton.setButtonText("Clear Selections");
+    clearButton.setBounds(clearX, clearY, clearWidth, clearHeight);
+    clearButton.addListener(this);
+    addAndMakeVisible(clearButton);
 }
 
 void MainContentComponent::paint (Graphics& g)
@@ -114,18 +123,16 @@ void MainContentComponent::setupToggleButton (ToggleButton& tb, StringRef text, 
 
 void MainContentComponent::buttonClicked (Button* b)
 {
-	if(b == &downloadButton) {
+	if(b == &displayButton) {
 		gndbnc::UkeChordDownloader downloader;
 		Array<Image> images;
 
-		for(int r = 0; r < rootButton.size(); r++) {
-			for(int t = 0; t < typeButton.size(); t++) {
-				if(rootButton[r].getToggleState() == true && typeButton[t].getToggleState() == true)
-					images.add(downloader.getChordImage(rootButton[r].getButtonText(), typeButton[t].getButtonText()));
+		for(auto& r : rootButton) {
+			for(auto& t : typeButton) {
+				if(r.getToggleState() == true && t.getToggleState() == true)
+					images.add(downloader.getChordImage(r.getButtonText(), t.getButtonText()));
 			}
 		}
-
-		// TODO check for empty array
 
 		if(chordWindow != nullptr) {
 			delete chordWindow;
@@ -133,6 +140,16 @@ void MainContentComponent::buttonClicked (Button* b)
 			addAndMakeVisible(chordWindow);
 		}
 		resized();
+	}
+
+	if(b == &clearButton) {
+		for(auto& r : rootButton) {
+			r.setToggleState(false, NotificationType::dontSendNotification);
+		}
+
+		for(auto& t : typeButton) {
+			t.setToggleState(false, NotificationType::dontSendNotification);
+		}
 	}
 
 }

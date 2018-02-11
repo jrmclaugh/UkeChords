@@ -46,7 +46,8 @@ private:
 
 	array<ToggleButton,12> rootButton;
 	array<ToggleButton,18> typeButton;
-    TextButton downloadButton;
+    TextButton displayButton;
+    TextButton clearButton;
 
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainContentComponent)
