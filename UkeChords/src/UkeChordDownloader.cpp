@@ -55,25 +55,59 @@ static bool grabXMLfile(URL url, std::string *buffer) {
 	}
 }
 
-String ExtractFileNameFromURL(String buffer) {
+//String ExtractFileNameFromURL(String buffer) {
+//	String temp = "";
+//
+//	int pos = buffer.lastIndexOfChar('/');
+//	if(pos) {
+//		temp = buffer.substring(pos+1);
+//	}
+//
+//	return temp;
+//}
+
+String ExtractFileNameFromURL(URL url) {
 	String temp = "";
 
-	int pos = buffer.lastIndexOfChar('/');
-	if(pos) {
-		temp = buffer.substring(pos+1);
+	StringArray urlParams = url.getParameterValues();
+	cout << url.toString(true).toStdString() << endl;
+	for(auto p : urlParams) {
+		cout << p << endl;
 	}
 
 	return temp;
 }
 
-static const char* grabFile(URL url) {
+inline String buildFileName(String note, String type) {
+	return String(note + "_" + type + ".png");
+}
+
+String CheckForFileDownloaded(String note, String type) {
+	String fileName = buildFileName(note, type);
+	cout << "File name: " << fileName << std::endl;
+
+	//check for file
+	FILE *file = fopen(fileName.toRawUTF8(), "rb");
+	// check if already downloaded
+	if(file != NULL) {
+		fclose(file);
+		cout << "Already downloaded." << endl;
+		return fileName.toRawUTF8();
+	}
+	else
+	{
+		return "";
+	}
+}
+
+static const char* grabFile(URL url, String note, String type) {
 	// TODO: see if FILE can be replaced by juce::File (curl seems to require former)
 	FILE *file;
 
-	String fileName = ExtractFileNameFromURL(url.toString(true).toStdString());
-	cout << "File name: " << fileName << std::endl;
-	file = fopen("temp.png", "wb");
+	String fileName = buildFileName(note, type);
 
+	//if doesn't exist, open new and download
+	file = fopen(fileName.toRawUTF8(), "wb");
 	CURL *curl = curl_easy_init();
 	if(curl) {
 	  CURLcode res;
@@ -90,37 +124,46 @@ static const char* grabFile(URL url) {
 	  curl_easy_cleanup(curl);
 	}
 
-	return "temp.png";
+	return fileName.toRawUTF8();
 }
 
 Image UkeChordDownloader::getChordImage(String note, String type) {
 	// URL class get methods don't support ssl, always gets failure to connect
 	// have to resort to buildling URL using class but using libcurl for actual download
+	String localFile;
 
-	// steps for grabbing pic
-	// 1. build URL based on note and type
-	// 2. use CURL to grab XML
-	// 3. parse XML to grab link of image
-	// 4. download image itself
-	// 5. draw image on screen (or pass to function that lays it out)
-	std::string readBuffer;
+	// first check for file before downloading
+	String fileCheck = CheckForFileDownloaded(note, type);
 
-	//1. build URL
-	URL api (API_URL);
-	api = api.withParameter("ak", API_KEY);
-	api = api.withParameter("r", note);
-	api = api.withParameter("typ", type);
+	if(fileCheck == "") {
+		// steps for grabbing pic
+		// 1. build URL based on note and type
+		// 2. use CURL to grab XML
+		// 3. parse XML to grab link of image
+		// 4. download image itself
+		std::string readBuffer;
 
-	// 2. grab XML file
-	grabXMLfile(api, &readBuffer);
+		// 1. build URL
+		URL api (API_URL);
+		api = api.withParameter("ak", API_KEY);
+		api = api.withParameter("r", note);
+		api = api.withParameter("typ", type);
 
-	// 3. parse XML to grab link
-	URL imageFile (ExtractXMLValue(readBuffer, CHORD_XML_TAG.toStdString()));
+		// 2. grab XML file
+		grabXMLfile(api, &readBuffer);
 
-	// 4. download image (using link extracted)
-	String localFile = grabFile(imageFile);
+		// 3. parse XML to grab link
+		URL imageFile (ExtractXMLValue(readBuffer, CHORD_XML_TAG.toStdString()));
 
-	// 5. print image to screen
+		// 4. download image (using link extracted)
+		localFile = grabFile(imageFile, note, type);
+	}
+	else
+	{
+		localFile = fileCheck;
+	}
+
+	// load file to local Image
 	File file = File(localFile);
     Image img = ImageFileFormat::loadFrom(file);
 
