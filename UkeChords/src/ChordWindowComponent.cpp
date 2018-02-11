@@ -40,7 +40,7 @@ void ChordWindowComponent::resized() {
 }
 
 void ChordWindowComponent::addFlexItem(Image image) {
-	flexBox.items.add(FlexItem(200, 250).withMargin(10));
+	flexBox.items.add(FlexItem(200, 250).withMargin(5));
 
     auto &flexItem = flexBox.items.getReference(flexBox.items.size() - 1);
 

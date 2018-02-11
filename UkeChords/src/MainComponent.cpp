@@ -11,7 +11,7 @@
 //==============================================================================
 MainContentComponent::MainContentComponent()
 {
-    setSize(1280, 720);
+    setSize(1280, 800);
 
 	setupChordSelectionPanel();
 
